@@ -1,0 +1,17 @@
+.mainWrapper {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1; /* розтягується по висоті відносно інших елементів */
+    padding: 20px;
+    position: relative;
+    overflow-y: auto;
+}
+
+header, footer {
+    padding: 10px 20px;
+    background-color: silver;
+}

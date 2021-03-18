@@ -1,0 +1,12 @@
+.filmItem {
+    border: 1px solid lightgray;
+    border-radius: 8px;
+}
+
+img {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    /*height: 200;*/
+    width: 100%;
+}
