@@ -1,17 +1,37 @@
 import React from 'react';
-
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link, useHistory
+} from "react-router-dom";
 import { BaseLayout } from './layouts';
-import { Home } from './pages';
-import logo from './logo.svg';
+import { Home, MovieDetails } from './pages';
 import './App.css';
 
 
 
 function App() {
+const history = useHistory();
 
   return (
     <BaseLayout>
-      <Home/>
+        <Switch>
+            <Route path='/' exact>
+                <Home/>
+            </Route>
+
+            <Route path='/movie/:id'>
+                <MovieDetails/>
+            </Route>
+
+            <Route>
+                <h1>PAGE NOT FOUND
+                    <button onClick={() => history.push('/')}>go home</button>
+                </h1>
+            </Route>
+        </Switch>
+
     </BaseLayout>
   );
 }
