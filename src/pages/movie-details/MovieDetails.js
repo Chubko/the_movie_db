@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './MovieDetails.module.css';
 import { useParams, useRouteMatch } from "react-router";
 import { moviesService } from '../../services';
+import { toast } from 'react-toastify';
 
 export const MovieDetails = () => {
     const [filmDetails, setFilmDetails] = useState(null);
@@ -14,10 +15,12 @@ export const MovieDetails = () => {
             setIsLoading(true);
 
             const data = await moviesService.getMovieDetailsById(id);
-            
+
             setFilmDetails(data);
+            toast.success('Data loaded!');
         } catch (e) {
             console.error(e);
+            toast.error('Error!');
         } finally {
             setIsLoading(false);
         }
@@ -27,10 +30,10 @@ export const MovieDetails = () => {
         getMovieDetails();
     }, []);
 
-    if (isLoading && !filmDetails) {
+    if (isLoading || !filmDetails || isLoading === null) {
         return <div>loading...</div>
     }
-    console.log(filmDetails)
+
     return (
         <div>
             <h1>{filmDetails.original_title}</h1>
