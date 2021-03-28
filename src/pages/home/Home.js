@@ -1,24 +1,21 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from "react-router-dom";
-import {FilmList} from "../../components";
-import {genresService, moviesService} from '../../services';
+
+import { FilmList, PaginationWrapper } from "../../components";
+import { genresService, moviesService } from '../../services';
+import { mergeMoviesWithGenres } from '../../utils';
 import styles from './Home.module.css';
-import {PaginationWrapper} from "../../components";
+
 
 export const Home = () => {
     const history = useHistory();
-    const [moviesList, setMoviesList] = useState([]);
     const [genresList, setGenresList] = useState([]);
     const [isLoading, setIsLoading] = useState(null);
-    const [movieData, setMovieData] = useState(null);
+    const [moviesData, setMoviesData] = useState(null);
 
     const fetchMovies = async (params) => {
         try {
-            const {page, results, total_pages, total_results} = await moviesService.getMovies(params);
-
-            setMovieData({page, results, total_pages, total_results});
-
-            return results;
+            return  moviesService.getMovies(params);
         } catch (e) {
             console.error(e);
         }
@@ -26,7 +23,7 @@ export const Home = () => {
 
     const fetchGenres = async () => {
         try {
-            const {genres} = await genresService.getGenres();
+            const { genres } = await genresService.getGenres();
 
             return genres;
         } catch (e) {
@@ -34,22 +31,15 @@ export const Home = () => {
         }
     }
 
-    const fetchMoviesData = async (movieParams) => {
-        const request = genresList.length ? [ fetchMovies(movieParams) ] : [ fetchMovies(movieParams), fetchGenres() ];
+    const fetchMoviesData = async (params) => {
+        const request = [ fetchMovies(params), fetchGenres() ];
 
         try {
             setIsLoading(true);
 
-            const [ movies, genres = genresList ] = await Promise.all(request);
+            const [{ results, ...rest }, genres ] = await Promise.all(request);
 
-            const mergeWithGenresMovies = movies.map(movie => {
-                const { genre_ids } = movie;
-                const movieGenresList = genre_ids.map(genreId => genres.find(el => el.id === genreId));
-
-                return { ...movie, movieGenresList };
-            })
-
-            setMoviesList(mergeWithGenresMovies);
+            setMoviesData({ movies: mergeMoviesWithGenres(results, genres), ...rest });
             setGenresList(genres);
         } catch (e) {
             console.error(e);
@@ -66,14 +56,21 @@ export const Home = () => {
 
     const onFilmClick = (film) => history.push(`/movie/${film.id}`);
 
-    const handlePageChange = (page) => fetchMoviesData({ page });
+    const handlePageChange = async (page) => {
+        const { results, ...rest } = await fetchMovies({ page });
+
+        setMoviesData({
+            movies: mergeMoviesWithGenres(results, genresList),
+            ...rest
+        });
+    }
 
     return (
         <div>
             {isLoading || isLoading === null ? renderLoadingIndicator() : (
                 <PaginationWrapper
-                    currentPage={movieData.page}
-                    totalPages={movieData.total_pages}
+                    currentPage={moviesData.page}
+                    totalPages={moviesData.total_pages}
                     onPreviousClick={handlePageChange}
                     onNextClick={handlePageChange}
                     handleFirstPage={handlePageChange}
@@ -81,7 +78,7 @@ export const Home = () => {
                     >
                     <FilmList
                         onFilmClick={onFilmClick}
-                        items={moviesList}/>
+                        items={moviesData.movies}/>
                 </PaginationWrapper>
             )}
         </div>
