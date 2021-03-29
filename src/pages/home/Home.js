@@ -15,7 +15,7 @@ export const Home = () => {
 
     const fetchMovies = async (params) => {
         try {
-            return  moviesService.getMovies(params);
+            return await moviesService.getMovies(params);
         } catch (e) {
             console.error(e);
         }
@@ -30,6 +30,7 @@ export const Home = () => {
             console.error(e);
         }
     }
+
 
     const fetchMoviesData = async (params) => {
         const request = [ fetchMovies(params), fetchGenres() ];
@@ -76,9 +77,12 @@ export const Home = () => {
                     handleFirstPage={handlePageChange}
                     handleLastPage={handlePageChange}
                     >
+
                     <FilmList
                         onFilmClick={onFilmClick}
-                        items={moviesData.movies}/>
+                        items={moviesData.movies}
+                        key={moviesData.movies.id}
+                    />
                 </PaginationWrapper>
             )}
         </div>

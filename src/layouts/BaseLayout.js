@@ -1,11 +1,15 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+
+import { Header } from "../pages";
 import styles from './BaseLayout.module.css';
+
 
 export const BaseLayout = ({ children }) => {
     return (
         <div className={styles.mainWrapper}>
-            <header><Link to="/">header data</Link></header>
+            <header>
+                <Header/>
+            </header>
             <main>
                 {children}
             </main>

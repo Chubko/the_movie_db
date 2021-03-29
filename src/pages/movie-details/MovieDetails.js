@@ -9,6 +9,7 @@ export const MovieDetails = () => {
     const [isLoading, setIsLoading] = useState(null);
     // const { params: { id }} = useRouteMatch();
     const { id, ...rest } = useParams();
+    console.log(id)
 
     const getMovieDetails = async () => {
         try {
@@ -16,7 +17,9 @@ export const MovieDetails = () => {
 
             const data = await moviesService.getMovieDetailsById(id);
 
+
             setFilmDetails(data);
+
             toast.success('Data loaded!');
         } catch (e) {
             console.error(e);
@@ -33,7 +36,7 @@ export const MovieDetails = () => {
     if (isLoading || !filmDetails || isLoading === null) {
         return <div>loading...</div>
     }
-
+    console.log(filmDetails)
     return (
         <div>
             <h1>{filmDetails.original_title}</h1>

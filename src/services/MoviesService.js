@@ -10,6 +10,11 @@ class MoviesService {
         const { data } = await AXIOS.get(`/movie/${movieId}`);
         return data;
     }
+
+    async searchMovie(params) {
+        const { data } = await AXIOS.get('/search/movie', { params });
+        return data;
+    }
 }
 
 export const moviesService = new MoviesService();
