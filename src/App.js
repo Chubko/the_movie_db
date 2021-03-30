@@ -1,14 +1,9 @@
 import React from 'react';
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    Link, useHistory
-} from "react-router-dom";
-import { BaseLayout } from './layouts';
-import { Home, MovieDetails } from './pages';
+import {Route, Switch, useHistory} from "react-router-dom";
+import {BaseLayout} from './layouts';
+import {Home, MovieDetails} from './pages';
 import './App.css';
-
+import {MovieSearch} from "./pages/movie-search/MovieSearch";
 
 
 function App() {
@@ -25,13 +20,16 @@ const history = useHistory();
                 <MovieDetails/>
             </Route>
 
+            <Route path='/search/movie' exact>
+                <MovieSearch/>
+            </Route>
+
             <Route>
                 <h1>PAGE NOT FOUND
                     <button onClick={() => history.push('/')}>go home</button>
                 </h1>
             </Route>
         </Switch>
-
     </BaseLayout>
   );
 }

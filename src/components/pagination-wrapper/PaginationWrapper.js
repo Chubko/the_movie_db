@@ -1,4 +1,12 @@
-export const PaginationWrapper = ({ children, currentPage, handleFirstPage, handleLastPage, onPreviousClick, onNextClick, totalPages }) => {
+export const PaginationWrapper = ({
+                                      children,
+                                      currentPage,
+                                      handleFirstPage,
+                                      handleLastPage,
+                                      onPreviousClick,
+                                      onNextClick,
+                                      totalPages
+                                  }) => {
     const handlePrevClick = () => {
         if (currentPage - 1 > 0) {
             onPreviousClick && onPreviousClick(currentPage - 1);

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useHistory } from "react-router-dom";
+import React, {useEffect, useState} from 'react';
+import {useHistory} from "react-router-dom";
 
-import { FilmList, PaginationWrapper } from "../../components";
-import { genresService, moviesService } from '../../services';
-import { mergeMoviesWithGenres } from '../../utils';
+import {FilmList, PaginationWrapper} from "../../components";
+import {genresService, moviesService} from '../../services';
+import {mergeMoviesWithGenres} from '../../utils';
 import styles from './Home.module.css';
 
 
@@ -23,7 +23,7 @@ export const Home = () => {
 
     const fetchGenres = async () => {
         try {
-            const { genres } = await genresService.getGenres();
+            const {genres} = await genresService.getGenres();
 
             return genres;
         } catch (e) {
@@ -31,16 +31,15 @@ export const Home = () => {
         }
     }
 
-
     const fetchMoviesData = async (params) => {
-        const request = [ fetchMovies(params), fetchGenres() ];
+        const request = [fetchMovies(params), fetchGenres()];
 
         try {
             setIsLoading(true);
 
-            const [{ results, ...rest }, genres ] = await Promise.all(request);
+            const [{results, ...rest}, genres] = await Promise.all(request);
 
-            setMoviesData({ movies: mergeMoviesWithGenres(results, genres), ...rest });
+            setMoviesData({movies: mergeMoviesWithGenres(results, genres), ...rest});
             setGenresList(genres);
         } catch (e) {
             console.error(e);
@@ -58,7 +57,7 @@ export const Home = () => {
     const onFilmClick = (film) => history.push(`/movie/${film.id}`);
 
     const handlePageChange = async (page) => {
-        const { results, ...rest } = await fetchMovies({ page });
+        const {results, ...rest} = await fetchMovies({page});
 
         setMoviesData({
             movies: mergeMoviesWithGenres(results, genresList),
@@ -69,6 +68,7 @@ export const Home = () => {
     return (
         <div>
             {isLoading || isLoading === null ? renderLoadingIndicator() : (
+
                 <PaginationWrapper
                     currentPage={moviesData.page}
                     totalPages={moviesData.total_pages}
@@ -76,13 +76,12 @@ export const Home = () => {
                     onNextClick={handlePageChange}
                     handleFirstPage={handlePageChange}
                     handleLastPage={handlePageChange}
-                    >
-
-                    <FilmList
+                >
+                    {moviesData && <FilmList
                         onFilmClick={onFilmClick}
                         items={moviesData.movies}
                         key={moviesData.movies.id}
-                    />
+                    />}
                 </PaginationWrapper>
             )}
         </div>

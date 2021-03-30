@@ -1,10 +1,11 @@
 import React from 'react';
 
-import { Header } from "../pages";
+import {Header} from "../pages";
 import styles from './BaseLayout.module.css';
 
 
-export const BaseLayout = ({ children }) => {
+export const BaseLayout = ({children}) => {
+
     return (
         <div className={styles.mainWrapper}>
             <header>

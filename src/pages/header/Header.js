@@ -1,15 +1,16 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Link, useHistory} from 'react-router-dom';
+import {useDispatch} from "react-redux";
 
-import {FilmSearchList} from "../../components";
+import {SET_SEARCH_MOVIE_LIST} from '../../redux'
 import {genresService, moviesService} from "../../services";
 import {mergeMoviesWithGenres} from "../../utils";
+import styles from './Header.module.css'
 
 
 export const Header = () => {
+    const dispatch = useDispatch();
     const history = useHistory();
-    const [genresList, setGenresList] = useState([]);
-    const [moviesData, setMoviesData] = useState(null);
 
     const fetchMovies = async (params) => {
         try {
@@ -21,7 +22,7 @@ export const Header = () => {
 
     const fetchGenres = async () => {
         try {
-            const { genres } = await genresService.getGenres();
+            const {genres} = await genresService.getGenres();
 
             return genres;
         } catch (e) {
@@ -30,45 +31,36 @@ export const Header = () => {
     }
 
     const search = async (e) => {
-        const request = [ fetchMovies({ query: e.target[0].value}), fetchGenres() ];
+        const request = [fetchMovies({query: e.target[0].value}), fetchGenres()];
 
-        try{
+        try {
             e.preventDefault();
 
             if (!e.target[0].value) {
                 history.push('/');
-                setMoviesData(null);
             }
 
-            const [{ results, ...rest }, genres ] = await Promise.all(request);
-            setMoviesData({ movies: mergeMoviesWithGenres(results, genres), ...rest });
-            setGenresList(genres);
+            const [{results, ...rest}, genres] = await Promise.all(request);
+
             history.push('/search/movie');
             e.target[0].value = '';
+
+            dispatch({type: SET_SEARCH_MOVIE_LIST, payload: mergeMoviesWithGenres(results, genres)});
         } catch (e) {
             console.error(e);
         }
     }
 
-    const onFilmClick = (film) => history.push(`/movie/${film.id}`);
-
-    const onHomeClick = () => setMoviesData(null);
-
     return (
         <div>
-            <Link to='/' onClick={onHomeClick}>
+            <div className={styles.title}>The Movie DataBase</div>
+            <Link to='/'>
                 home
             </Link>
-            <form  onSubmit={search}>
+            <form onSubmit={search}>
                 <input type="text" placeholder="Search.." name="search"/>
                 <button type="submit">Submit</button>
             </form>
-
-            {moviesData && <FilmSearchList
-                    onFilmClick={onFilmClick}
-                    items={moviesData.movies}
-                />
-            }
         </div>
     );
 }
